@@ -29,7 +29,7 @@ class PerformanceTests extends FlatSpec{
   }
 
   "SystematicAliasSampler" should "be at least 3X faster than Apache Commons Math NormalDistribution.sample()" in {
-    val sampleCount = 111
+    val sampleCount = 110
     val runCount = 100000
     val sasTime = warmUpAndMeasureTime({val results = sas.sample(sampleCount)}, runCount)
     val acmTime = warmUpAndMeasureTime({val results = normal.sample(sampleCount)}, runCount)

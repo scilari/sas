@@ -14,8 +14,8 @@ class GoldenRatioAliasSampler[VALUE_T](pmf: Array[Double], values: Array[VALUE_T
 
 object GoldenRatioAliasSampler{
   class GoldenRatioSequenceGenerator(seed: Double = Parameters.Default.random.nextDouble()) {
-    var x = seed
-    val gr = 0.6180339887498948482 // golden ratio conjugate
+    private[this] var x = seed
+    private[this] val gr = 0.6180339887498948482 // golden ratio conjugate
     def next(): Double = {
       x += gr
       x - x.toInt

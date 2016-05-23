@@ -174,8 +174,8 @@ object SystematicAliasSampler{
     * Initializes the alias table.
     * Kronmal and Peterson 1979 implementation of alias method by Walker (1974, 1977) as described in
     * "An Analysis of the Alias Method for Discrete Random-Variate Generation" by Smith and Jacobson (2005)
-    *
-    * @param pmf
+    * @param pmf Probability mass function.
+    * @return Tuple of aliasIndexes and corresponding aliasProbabilities.
     */
   def createAlias( pmf: Array[Double] ): (Array[Int], Array[Double]) = {
     val n = pmf.size
