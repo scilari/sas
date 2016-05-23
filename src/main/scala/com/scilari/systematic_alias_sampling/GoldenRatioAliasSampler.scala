@@ -1,7 +1,5 @@
 package com.scilari.systematic_alias_sampling
 
-//import com.scilari.systematic_alias_sampling.GoldenRatioAliasSampler.GoldenRatioSequenceGenerator
-
 import scala.reflect.ClassTag
 
 /**
