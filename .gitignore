@@ -3,7 +3,6 @@
 
 # sbt specific
 .cache
-.history
 .lib/
 dist/*
 target/
@@ -18,7 +17,7 @@ project/plugins/project/
 
 # IntelliJ Idea specific
 .idea/
-.project/
+project/
 *.ipr
 *.iws
 out
