@@ -5,6 +5,7 @@ import org.scalatest.FlatSpec
 import org.scalatest.Matchers._
 
 /**
+  * Very basic and crude performance tests to check the SAS characteristics
   * Created by iv on 5/23/2016.
   */
 class PerformanceTests extends FlatSpec{
@@ -16,6 +17,9 @@ class PerformanceTests extends FlatSpec{
 
   def nanosToMillis(nanos: Long): Double = nanos/1e6
 
+  // This is simple and probably flawed way to micro benchmark anything but gives consistent results with Google Caliper
+  // (may as well be flawed too).
+  // TODO: consider rewriting the benchmarks using http://openjdk.java.net/projects/code-tools/jmh/
   def measureTime(block: => Any, count: Int = 1): Double = {
     var dummy: Any = null
     val t0 = System.nanoTime()
@@ -34,13 +38,13 @@ class PerformanceTests extends FlatSpec{
     val sasTime = warmUpAndMeasureTime({val results = sas.sample(sampleCount)}, runCount)
     val acmTime = warmUpAndMeasureTime({val results = normal.sample(sampleCount)}, runCount)
     val timeRatio = acmTime/sasTime
-    println("Time ratio (speed improvement): " + timeRatio)
+    printf("Speed improvement of SAS over ACM NormalDistribution.sample(): %.2f \n", timeRatio)
     timeRatio should be > 3.0
   }
 
   "SystematicAliasSampler" should "have better fit than i.i.d. sampling by Cramer-von-Mises" in {
     val sampleCount = 100
-    val runCount = 10000
+    val runCount = 100
     val pmf = sas.getPmf
     val values = sas.getValues
 
@@ -70,8 +74,8 @@ class PerformanceTests extends FlatSpec{
     val ratioSas = meanSas/meanIid
     val ratioGolden = meanGolden/meanIid
 
-    println("SAS: Cramer-von-Mises test ratio (smaller is better): " + ratioSas )
-    println("SAS_Golden: Cramer-von-Mises test ratio (smaller is better): " + ratioGolden )
+    printf("SAS: Cramer-von-Mises test ratio (smaller is better): %.2f \n", ratioSas )
+    printf("SAS_Golden: Cramer-von-Mises test ratio (smaller is better): %.2f \n ", ratioGolden )
 
     meanSas should be < meanIid
     meanGolden should be < meanIid
