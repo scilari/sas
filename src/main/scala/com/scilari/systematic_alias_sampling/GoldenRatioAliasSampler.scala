@@ -7,8 +7,20 @@ import scala.reflect.ClassTag
   */
 class GoldenRatioAliasSampler[VALUE_T](pmf: Array[Double], values: Array[VALUE_T])(implicit tagV: ClassTag[VALUE_T]) extends SystematicAliasSampler[VALUE_T](pmf, values){
   val generator = new GoldenRatioAliasSampler.GoldenRatioSequenceGenerator()
-  val binCountAsDouble = pmf.size.toDouble
-  override def sample(sampleCount: Int): Array[VALUE_T] = generator.next(sampleCount).map((seed: Double) => sample(binCountAsDouble*seed))
+  private[this] val binCountAsDouble = pmf.size.toDouble
+  override def sample(sampleCount: Int): Array[VALUE_T] = sampleGolden(sampleCount)
+
+  def sampleGolden(sampleCount: Int, array: Array[VALUE_T] = null): Array[VALUE_T] = {
+    val a = if(array == null) new Array[VALUE_T](sampleCount) else array
+    var i = 0
+    while(i < sampleCount){
+      a(i) = sample(binCountAsDouble*generator.next())
+      i += 1
+    }
+    a
+  }
+
+
 }
 
 

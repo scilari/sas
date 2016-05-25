@@ -32,17 +32,27 @@ class PerformanceTests extends FlatSpec{
     measureTime(block, count)
   }
 
-  "SystematicAliasSampler" should "be at least 3X faster than Apache Commons Math NormalDistribution.sample()" in {
-    val sampleCount = 110
-    val runCount = 100000
-    val sasTime = warmUpAndMeasureTime({val results = sas.sample(sampleCount)}, runCount)
-    val acmTime = warmUpAndMeasureTime({val results = normal.sample(sampleCount)}, runCount)
+  val perfSampleCount = 110
+  val perfRunCount = 100000
+
+  "SystematicAliasSampler performance" should "be at least 3X faster than Apache Commons Math NormalDistribution.sample()" in {
+
+    val sasTime = warmUpAndMeasureTime({val results = sas.sample(perfSampleCount)}, perfRunCount)
+    val acmTime = warmUpAndMeasureTime({val results = normal.sample(perfSampleCount)}, perfRunCount)
     val timeRatio = acmTime/sasTime
     info(f"Speed improvement of SAS over ACM NormalDistribution.sample(): $timeRatio%.2f")
     timeRatio should be > 3.0
   }
 
-  "SystematicAliasSampler" should "have better fit than i.i.d. sampling by Cramer-von-Mises" in {
+  "SystematicAliasSampler (Golden) performance" should "be at faster than Apache Commons Math NormalDistribution.sample()" in {
+    val sasTime = warmUpAndMeasureTime({val results = golden.sample(perfSampleCount)}, perfRunCount)
+    val acmTime = warmUpAndMeasureTime({val results = normal.sample(perfSampleCount)}, perfRunCount)
+    val timeRatio = acmTime/sasTime
+    info(f"Speed improvement of SAS (Golden) over ACM NormalDistribution.sample(): $timeRatio%.2f")
+    timeRatio should be > 1.0
+  }
+
+  "SystematicAliasSampler goodness-of-fit" should "be better than i.i.d. sampling by Cramer-von-Mises" in {
     val sampleCount = 100
     val runCount = 100
     val pmf = sas.getPmf
