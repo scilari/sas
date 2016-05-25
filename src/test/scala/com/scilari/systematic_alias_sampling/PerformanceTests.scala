@@ -38,7 +38,7 @@ class PerformanceTests extends FlatSpec{
     val sasTime = warmUpAndMeasureTime({val results = sas.sample(sampleCount)}, runCount)
     val acmTime = warmUpAndMeasureTime({val results = normal.sample(sampleCount)}, runCount)
     val timeRatio = acmTime/sasTime
-    printf("Speed improvement of SAS over ACM NormalDistribution.sample(): %.2f \n", timeRatio)
+    info(f"Speed improvement of SAS over ACM NormalDistribution.sample(): $timeRatio%.2f")
     timeRatio should be > 3.0
   }
 
@@ -63,10 +63,10 @@ class PerformanceTests extends FlatSpec{
       Util.normalizeSum(Util.buildHistogram(samples.toArray, values.min, values.max, values.size), 1.0)
     }
 
-
-    val cvmSas = for(run <- 0 until runCount) yield Util.rootCramerVonMises(pmf, empiricalDistributionSystematic)
-    val cvmIid = for(run <- 0 until runCount) yield Util.rootCramerVonMises(pmf, empiricalDistributionIid)
-    val cvmGolden = for(run <- 0 until runCount) yield Util.rootCramerVonMises(pmf, empiricalDistributionGolden)
+    import StatisticalTests.rootCramerVonMises
+    val cvmSas = for(run <- 0 until runCount) yield rootCramerVonMises(pmf, empiricalDistributionSystematic)
+    val cvmIid = for(run <- 0 until runCount) yield rootCramerVonMises(pmf, empiricalDistributionIid)
+    val cvmGolden = for(run <- 0 until runCount) yield rootCramerVonMises(pmf, empiricalDistributionGolden)
 
     val meanSas = cvmSas.sum/cvmSas.size
     val meanIid = cvmIid.sum/cvmIid.size
@@ -74,8 +74,8 @@ class PerformanceTests extends FlatSpec{
     val ratioSas = meanSas/meanIid
     val ratioGolden = meanGolden/meanIid
 
-    printf("SAS: Cramer-von-Mises test ratio (smaller is better): %.2f \n", ratioSas )
-    printf("SAS_Golden: Cramer-von-Mises test ratio (smaller is better): %.2f \n ", ratioGolden )
+    info(f"SAS: Cramer-von-Mises test ratio (smaller is better): $ratioSas%.2f")
+    info(f"SAS_Golden: Cramer-von-Mises test ratio (smaller is better): $ratioGolden%.2f")
 
     meanSas should be < meanIid
     meanGolden should be < meanIid
