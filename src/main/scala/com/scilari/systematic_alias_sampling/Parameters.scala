@@ -5,7 +5,7 @@ import org.apache.commons.math3.random.{RandomGenerator, Well512a}
 /**
   * Parameter class for the SystematicAliasSampler
   * @param random RNG to produce the needed random numbers.
-  * @param isDivisibilityProblem Function to define whether ot split the computation recursively into smaller batches.
+  * @param isDivisibilityProblem Function to define whether to split the computation recursively into smaller batches.
   * @param minBatchSize Threshold for minimum batch size in recursion.
   * @param minRecurSize Threshold for using a multiplication with batchSplitNumerator/batchSplitDenominator to define
   *                     the recursive batch sizes.
