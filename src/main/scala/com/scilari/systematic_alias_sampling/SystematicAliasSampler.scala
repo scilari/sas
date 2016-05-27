@@ -31,11 +31,11 @@ class SystematicAliasSampler[@specialized(Double, Int) VALUE_T]
   require(pmf_.length >= 2, "Distribution does not have at least two values.")
 
   private[this] val binCount: Int = pmf_.length
-  private[this] val pmf: Array[Double] = Util.normalizeSum(pmf_.clone(), 1.0)
+  // only protected because specialization generates access errors otherwise (for some reason)
+  protected[this] val pmf: Array[Double] = Util.normalizeSum(pmf_.clone(), 1.0)
   private[this] val values: Array[VALUE_T] = values_.clone()
 
-  protected[this] val (aliasIndexes, aliasProbabilities) = SystematicAliasSampler.createAlias(pmf)
-  private[this] val aliasedValues = aliasIndexes map {values(_)}
+  private[this] val (aliasedValues, aliasProbabilities) = SystematicAliasSampler.createAlias(pmf, values)
 
   // init parameters
   private[this] val random: RandomGenerator = parameters.random
@@ -130,7 +130,7 @@ class SystematicAliasSampler[@specialized(Double, Int) VALUE_T]
       pmf.mkString("pdf = [", " ", "]\n") +
       values.mkString("points = [", " ", "]\n") +
       aliasedValues.mkString("aliasedPoints = [", " ", "]\n") +
-      aliasIndexes.mkString("aliasIndexes = [", " ", "]\n") +
+      //aliasIndexes.mkString("aliasIndexes = [", " ", "]\n") +
       aliasProbabilities.mkString("aliasProb = [", " ", "]\n") +
       cdf.mkString("cdf = [", " ", "]\n")
   }
@@ -173,9 +173,10 @@ object SystematicAliasSampler{
     * Kronmal and Peterson 1979 implementation of alias method by Walker (1974, 1977) as described in
     * "An Analysis of the Alias Method for Discrete Random-Variate Generation" by Smith and Jacobson (2005)
     * @param pmf Probability mass function.
-    * @return Tuple of aliasIndexes and corresponding aliasProbabilities.
+    * @param values Values corresponding to the probability mass function.
+    * @return Tuple of aliasedValues and corresponding aliasProbabilities.
     */
-  def createAlias( pmf: Array[Double] ): (Array[Int], Array[Double]) = {
+  def createAlias[@specialized(Double, Int) T]( pmf: Array[Double], values: Array[T] )(implicit tag: ClassTag[T] ): (Array[T], Array[Double]) = {
     val n = pmf.length
     val q = (0 until n).map{ n.toDouble*pmf(_) }.toArray
     // using stacks to retain spatial order
@@ -196,7 +197,9 @@ object SystematicAliasSampler{
         h.push(k)
       }
     }
-    (a, s)
+
+    val aliasedValues = a.map{values(_)}
+    (aliasedValues, s)
   }
 
 }
