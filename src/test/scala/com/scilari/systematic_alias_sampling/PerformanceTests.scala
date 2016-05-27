@@ -33,7 +33,7 @@ class PerformanceTests extends FlatSpec{
   }
 
   val perfSampleCount = 110
-  val perfRunCount = 100000
+  val perfRunCount = 20000
 
   "SystematicAliasSampler performance" should "be at least 3X faster than Apache Commons Math NormalDistribution.sample()" in {
 
@@ -53,24 +53,24 @@ class PerformanceTests extends FlatSpec{
   }
 
   "SystematicAliasSampler goodness-of-fit" should "be better than i.i.d. sampling by Cramer-von-Mises" in {
-    val sampleCount = 100
+    val sampleCount = 110
     val runCount = 100
     val pmf = sas.getPmf
     val values = sas.getValues
 
     def empiricalDistributionSystematic = {
       val samples = sas.sample(sampleCount)
-      Util.normalizeSum(Util.buildHistogram(samples.toArray, values.min, values.max, values.size), 1.0)
+      Util.normalizeSum(Util.buildHistogram(samples.toArray, values.min, values.max, values.length), 1.0)
     }
 
     def empiricalDistributionIid = {
       val samples = for(i <- 0 until sampleCount) yield sas.sample()
-      Util.normalizeSum(Util.buildHistogram(samples.toArray, values.min, values.max, values.size), 1.0)
+      Util.normalizeSum(Util.buildHistogram(samples.toArray, values.min, values.max, values.length), 1.0)
     }
 
     def empiricalDistributionGolden = {
       val samples = golden.sample(sampleCount)
-      Util.normalizeSum(Util.buildHistogram(samples.toArray, values.min, values.max, values.size), 1.0)
+      Util.normalizeSum(Util.buildHistogram(samples.toArray, values.min, values.max, values.length), 1.0)
     }
 
     import StatisticalTests.rootCramerVonMises
