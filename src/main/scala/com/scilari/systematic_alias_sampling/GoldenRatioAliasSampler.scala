@@ -5,6 +5,8 @@ import scala.reflect.ClassTag
 /**
   * Created by iv on 5/23/2016.
   */
+// TODO: Use traits when inheriting from a specialized class (might lose specialization here)
+// see: http://axel22.github.io/2013/11/03/specialization-quirks.html
 class GoldenRatioAliasSampler[VALUE_T](pmf: Array[Double], values: Array[VALUE_T])(implicit tagV: ClassTag[VALUE_T]) extends SystematicAliasSampler[VALUE_T](pmf, values){
   val generator = new GoldenRatioAliasSampler.GoldenRatioSequenceGenerator()
   private[this] val binCountAsDouble = pmf.size.toDouble
@@ -19,8 +21,6 @@ class GoldenRatioAliasSampler[VALUE_T](pmf: Array[Double], values: Array[VALUE_T
     }
     a
   }
-
-
 }
 
 
@@ -36,6 +36,5 @@ object GoldenRatioAliasSampler{
     def next(k: Int): Array[Double] = {
       Array.fill(k)(next())
     }
-
   }
 }
