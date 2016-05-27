@@ -23,6 +23,7 @@ object Util {
                                maxX: Double,
                                binCount: Int)
                                (implicit num: Fractional[Double], tag: ClassTag[Double]): (Array[Double], Array[Double]) = {
+    require(minX < maxX, "minX is not less than maxX.")
     val points = Util.linspace(minX, maxX, binCount)
     val pmf = Util.normalizeSum(points map distribution, 1.0)
     (pmf, points)

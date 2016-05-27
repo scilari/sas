@@ -28,6 +28,7 @@ class SystematicAliasSampler[@specialized(Double, Int) VALUE_T]
 )( implicit tagV: ClassTag[VALUE_T] ) {
 
   require(pmf_.length == values_.length, "Probability mass function array and values array are not the same length.")
+  require(pmf_.length >= 2, "Distribution does not have at least two values.")
 
   private[this] val binCount: Int = pmf_.length
   private[this] val pmf: Array[Double] = Util.normalizeSum(pmf_.clone(), 1.0)
