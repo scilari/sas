@@ -28,6 +28,8 @@ class SystematicAliasSampler[@specialized(Double, Int) VALUE_T]
   parameters: Parameters = new Parameters()
 )( implicit tagV: ClassTag[VALUE_T] ) {
 
+  require(pmf_.length == values_.length, "Probability mass function array and values array are not the same length.")
+
   private[this] val binCount: Int = pmf_.length
   private[this] val pmf: Array[Double] = Util.normalizeSum(pmf_.clone(), 1.0)
   private[this] val values: Array[VALUE_T] = values_.clone()
@@ -138,7 +140,7 @@ class SystematicAliasSampler[@specialized(Double, Int) VALUE_T]
 object SystematicAliasSampler{
   // primes close to typical bin counts
   val BIN_COUNT_50 = 53
-  val BIN_COUNT_100 = 53
+  val BIN_COUNT_100 = 101
   val BIN_COUNT_250 = 251
   val BIN_COUNT_1000 = 1009
   val BIN_COUNT_10000 = 10009
@@ -147,13 +149,13 @@ object SystematicAliasSampler{
   /**
     * Convenience method to create Systematic Alias Sampler from a continuous distribution by generating a corresponding
     * discrete approximation automatically. TODO: This functionality should be implemented in Utils.
-    * @param distribution
-    * @param minX
-    * @param maxX
-    * @param binCount
-    * @param parameters
-    * @param num
-    * @param tag
+    * @param distribution Function describing the distribution.
+    * @param minX Minimum point for approximated values.
+    * @param maxX Maximum point for approximated values.
+    * @param binCount Number of values in the approximation.
+    * @param parameters Parameter class instance.
+    * @param num Implicit parameter.
+    * @param tag Implicit class tag for specialization.
     * @return
     */
   def apply(
@@ -178,7 +180,7 @@ object SystematicAliasSampler{
     * @return Tuple of aliasIndexes and corresponding aliasProbabilities.
     */
   def createAlias( pmf: Array[Double] ): (Array[Int], Array[Double]) = {
-    val n = pmf.size
+    val n = pmf.length
     val q = (0 until n).map{ n.toDouble*pmf(_) }.toArray
     // using stacks to retain spatial order
     val (g, h) = mutable.Stack(0 until n : _*).partition{ i => q(i) >= 1.0 } // indexes of greater and smaller items
