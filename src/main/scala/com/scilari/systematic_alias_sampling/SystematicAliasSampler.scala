@@ -3,7 +3,6 @@ package com.scilari.systematic_alias_sampling
 import org.apache.commons.math3.random.RandomGenerator
 
 import scala.collection.mutable
-import scala.math.Fractional
 import scala.reflect.ClassTag
 
 /**
@@ -148,15 +147,13 @@ object SystematicAliasSampler{
 
   /**
     * Convenience method to create Systematic Alias Sampler from a continuous distribution by generating a corresponding
-    * discrete approximation automatically. TODO: This functionality should be implemented in Utils.
+    * discrete approximation automatically.
     * @param distribution Function describing the distribution.
     * @param minX Minimum point for approximated values.
     * @param maxX Maximum point for approximated values.
     * @param binCount Number of values in the approximation.
     * @param parameters Parameter class instance.
-    * @param num Implicit parameter.
-    * @param tag Implicit class tag for specialization.
-    * @return
+    * @return SystematicAliasSampler instance initialized with approximate of the given distribution.
     */
   def apply(
              distribution: Double => Double,
@@ -164,12 +161,10 @@ object SystematicAliasSampler{
              maxX: Double,
              binCount: Int = BIN_COUNT_1000,
              parameters: Parameters = new Parameters()
-           )
-           (implicit num: Fractional[Double], tag: ClassTag[Double]): SystematicAliasSampler[Double] = {
+           ): SystematicAliasSampler[Double] = {
 
-    val points = Util.linspace(minX, maxX, binCount)
-    val pdf = Util.normalizeSum(points map distribution, 1.0)
-    new SystematicAliasSampler[Double](pdf, points, parameters)
+    val (pmf, points) = Util.distributionApproximation(distribution, minX, maxX, binCount)
+    new SystematicAliasSampler[Double](pmf, points, parameters)
   }
 
   /**

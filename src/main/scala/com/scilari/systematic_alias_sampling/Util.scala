@@ -2,6 +2,7 @@ package com.scilari.systematic_alias_sampling
 
 import org.apache.commons.math3.random.Well512a
 
+import scala.math.Fractional
 import scala.reflect.ClassTag
 import scala.{specialized => spec}
 
@@ -15,6 +16,16 @@ object Util {
     val q = x/y
     val d = distanceFromInt(q)
     d < eps
+  }
+
+  def distributionApproximation(distribution: Double => Double,
+                               minX: Double,
+                               maxX: Double,
+                               binCount: Int)
+                               (implicit num: Fractional[Double], tag: ClassTag[Double]): (Array[Double], Array[Double]) = {
+    val points = Util.linspace(minX, maxX, binCount)
+    val pmf = Util.normalizeSum(points map distribution, 1.0)
+    (pmf, points)
   }
 
   val random = new Well512a()
