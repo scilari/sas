@@ -1,11 +1,12 @@
 package com.scilari.systematic_alias_sampling
 
+import com.scilari.systematic_alias_sampling.StatisticalTests._
 import org.apache.commons.math3.distribution.NormalDistribution
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers._
 
 /**
-  * Very basic and crude performance tests to check the SAS characteristics
+  * Very basic and crude performance tests to check the SAS characteristics: time performance and goodness-of-fit
   * Created by iv on 5/23/2016.
   */
 class PerformanceTests extends FlatSpec{
@@ -52,44 +53,65 @@ class PerformanceTests extends FlatSpec{
     timeRatio should be > 1.0
   }
 
+
+  /*-----------------------------------
+   * Goodness-of-fit tests
+   */
+  val fitSampleCount = 110
+
+  // Helper methods
+  def empiricalDistributionSystematic(sampler: SystematicAliasSampler[Double]) = {
+    val samples = sampler.sample(fitSampleCount)
+    val values = sampler.getValues
+    Util.normalizeSum(Util.buildHistogram(samples.toArray, values.min, values.max, values.length), 1.0)
+  }
+
+  def empiricalDistributionIid(sampler: SystematicAliasSampler[Double]) = {
+    val samples = for(i <- 0 until fitSampleCount) yield sampler.sample()
+    val values = sampler.getValues
+    Util.normalizeSum(Util.buildHistogram(samples.toArray, values.min, values.max, values.length), 1.0)
+  }
+
+  def meanSystematicCvM(runCount: Int, sampler: SystematicAliasSampler[Double]): Double = {
+     val cvm = for(run <- 0 until runCount) yield rootCramerVonMises(sampler.getPmf, empiricalDistributionSystematic(sampler))
+     cvm.sum/cvm.size
+  }
+
+  def meanIidCvM(runCount: Int, sampler: SystematicAliasSampler[Double]): Double = {
+    val cvm = for(run <- 0 until runCount) yield rootCramerVonMises(sampler.getPmf, empiricalDistributionIid(sampler))
+    cvm.sum/cvm.size
+  }
+
+
   "SystematicAliasSampler goodness-of-fit" should "be better than i.i.d. sampling by Cramer-von-Mises" in {
-    val sampleCount = 110
     val runCount = 100
-    val pmf = sas.getPmf
-    val values = sas.getValues
-
-    def empiricalDistributionSystematic = {
-      val samples = sas.sample(sampleCount)
-      Util.normalizeSum(Util.buildHistogram(samples.toArray, values.min, values.max, values.length), 1.0)
-    }
-
-    def empiricalDistributionIid = {
-      val samples = for(i <- 0 until sampleCount) yield sas.sample()
-      Util.normalizeSum(Util.buildHistogram(samples.toArray, values.min, values.max, values.length), 1.0)
-    }
-
-    def empiricalDistributionGolden = {
-      val samples = golden.sample(sampleCount)
-      Util.normalizeSum(Util.buildHistogram(samples.toArray, values.min, values.max, values.length), 1.0)
-    }
-
-    import StatisticalTests.rootCramerVonMises
-    val cvmSas = for(run <- 0 until runCount) yield rootCramerVonMises(pmf, empiricalDistributionSystematic)
-    val cvmIid = for(run <- 0 until runCount) yield rootCramerVonMises(pmf, empiricalDistributionIid)
-    val cvmGolden = for(run <- 0 until runCount) yield rootCramerVonMises(pmf, empiricalDistributionGolden)
-
-    val meanSas = cvmSas.sum/cvmSas.size
-    val meanIid = cvmIid.sum/cvmIid.size
-    val meanGolden = cvmGolden.sum/cvmGolden.size
+    val meanSas = meanSystematicCvM(runCount, sas)// cvmSas.sum/cvmSas.size
+    val meanIid = meanIidCvM(runCount, sas)//cvmIid.sum/cvmIid.size
+    val meanGolden = meanSystematicCvM(runCount, golden)
     val ratioSas = meanSas/meanIid
     val ratioGolden = meanGolden/meanIid
 
     info(f"SAS: Cramer-von-Mises test ratio (smaller is better): $ratioSas%.2f")
-    info(f"SAS_Golden: Cramer-von-Mises test ratio (smaller is better): $ratioGolden%.2f")
+    info(f"SAS (Golden): Cramer-von-Mises test ratio (smaller is better): $ratioGolden%.2f")
 
     meanSas should be < meanIid
     meanGolden should be < meanIid
   }
 
+  "SystematicAliasSampler goodness-of-fit with random distributions" should "be better than i.i.d. sampling by Cramer-von-Mises" in {
+    val n = SystematicAliasSampler.BIN_COUNT_1000
+    def randomDistribution = Array.fill(n)(Util.random.nextDouble())
+    val runCount = 20
+
+    for(randomDistributions <- 0 until 5){
+      val sas = new SystematicAliasSampler[Double](randomDistribution, Util.linspace(-1.0, 1.0, n))
+      val meanSas = meanSystematicCvM(runCount, sas)
+      val meanIid = meanIidCvM(runCount, sas)
+      val ratioSas = meanSas/meanIid
+      info(f"Random distribution $randomDistributions%d. SAS: Cramer-von-Mises test ratio (smaller is better): $ratioSas%.2f")
+      meanSas should be < meanIid
+    }
+
+  }
 
 }
