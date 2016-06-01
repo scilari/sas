@@ -37,7 +37,6 @@ class PerformanceTests extends FlatSpec{
   val perfRunCount = 20000
 
   "SystematicAliasSampler performance" should "be at least 3X faster than Apache Commons Math NormalDistribution.sample()" in {
-
     val sasTime = warmUpAndMeasureTime({val results = sas.sample(perfSampleCount)}, perfRunCount)
     val acmTime = warmUpAndMeasureTime({val results = normal.sample(perfSampleCount)}, perfRunCount)
     val timeRatio = acmTime/sasTime
@@ -45,7 +44,7 @@ class PerformanceTests extends FlatSpec{
     timeRatio should be > 3.0
   }
 
-  "SystematicAliasSampler (Golden) performance" should "be at faster than Apache Commons Math NormalDistribution.sample()" in {
+  it should "be faster than Apache Commons Math NormalDistribution.sample(), when using Golden Ratio sequence" in {
     val sasTime = warmUpAndMeasureTime({val results = golden.sample(perfSampleCount)}, perfRunCount)
     val acmTime = warmUpAndMeasureTime({val results = normal.sample(perfSampleCount)}, perfRunCount)
     val timeRatio = acmTime/sasTime
@@ -58,6 +57,7 @@ class PerformanceTests extends FlatSpec{
    * Goodness-of-fit tests
    */
   val fitSampleCount = 110
+  val fitRunCount = 100
 
   // Helper methods
   def empiricalDistributionSystematic(sampler: SystematicAliasSampler[Double]) = {
@@ -82,23 +82,23 @@ class PerformanceTests extends FlatSpec{
     cvm.sum/cvm.size
   }
 
+  val meanIid = meanIidCvM(fitRunCount, sas)
 
   "SystematicAliasSampler goodness-of-fit" should "be better than i.i.d. sampling by Cramer-von-Mises" in {
-    val runCount = 100
-    val meanSas = meanSystematicCvM(runCount, sas)// cvmSas.sum/cvmSas.size
-    val meanIid = meanIidCvM(runCount, sas)//cvmIid.sum/cvmIid.size
-    val meanGolden = meanSystematicCvM(runCount, golden)
+    val meanSas = meanSystematicCvM(fitRunCount, sas)
     val ratioSas = meanSas/meanIid
-    val ratioGolden = meanGolden/meanIid
-
     info(f"SAS: Cramer-von-Mises test ratio (smaller is better): $ratioSas%.2f")
-    info(f"SAS (Golden): Cramer-von-Mises test ratio (smaller is better): $ratioGolden%.2f")
-
     meanSas should be < meanIid
+  }
+
+  it should "be better than i.i.d. sampling by Cramer-von-Mises when using Golden Ratio sequence" in {
+    val meanGolden = meanSystematicCvM(fitRunCount, golden)
+    val ratioGolden = meanGolden/meanIid
+    info(f"SAS (Golden): Cramer-von-Mises test ratio (smaller is better): $ratioGolden%.2f")
     meanGolden should be < meanIid
   }
 
-  "SystematicAliasSampler goodness-of-fit with random distributions" should "be better than i.i.d. sampling by Cramer-von-Mises" in {
+  it should "be better than i.i.d. sampling by Cramer-von-Mises with random distributions" in {
     val n = SystematicAliasSampler.BIN_COUNT_1000
     def randomDistribution = Array.fill(n)(Util.random.nextDouble())
     val runCount = 20

@@ -35,6 +35,4 @@ class AliasTableTests extends FlatSpec{
     info(f"Total difference between aliased probabilities and original pmf: $totalDiff%f")
   }
 
-
-
 }
