@@ -45,9 +45,11 @@ class SystematicAliasSampler[@specialized(Double, Int) VALUE_T]
   private[this] val batchSplitNumerator: Int = parameters.batchSplitNumerator
   private[this] val batchSplitDenominator: Int = parameters.batchSplitDenominator
 
-
+  // getters and convenience methods e.g. for testing
   def getPmf = pmf.clone()
   def getValues = values.clone()
+  def getAliasedValues = aliasedValues.clone()
+  def getAliasProbabilities = aliasProbabilities.clone()
   def cdf: Array[Double] = Util.cumsum(pmf)
 
 
