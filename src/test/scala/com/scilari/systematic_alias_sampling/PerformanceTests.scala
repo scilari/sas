@@ -93,19 +93,20 @@ class PerformanceTests extends FlatSpec{
   }
 
   val meanIid = meanIidCvM(fitRunCount, sas)
+  val qualityThreshold = 0.75*meanIid
 
   "SystematicAliasSampler goodness-of-fit" should "be better than i.i.d. sampling by Cramer-von-Mises" in {
     val meanSas = meanSystematicCvM(fitRunCount, sas)
     val ratioSas = meanSas/meanIid
     info(f"SAS: Cramer-von-Mises test ratio (smaller is better): $ratioSas%.2f")
-    meanSas should be < meanIid
+    meanSas should be < qualityThreshold
   }
 
   it should "be better than i.i.d. sampling by Cramer-von-Mises when using Golden Ratio sequence" in {
     val meanGolden = meanSystematicCvM(fitRunCount, golden)
     val ratioGolden = meanGolden/meanIid
     info(f"SAS (Golden): Cramer-von-Mises test ratio (smaller is better): $ratioGolden%.2f")
-    meanGolden should be < meanIid
+    meanGolden should be < qualityThreshold
   }
 
   it should "be better than i.i.d. sampling by Cramer-von-Mises with random distributions" in {
@@ -119,7 +120,7 @@ class PerformanceTests extends FlatSpec{
       val meanIid = meanIidCvM(runCount, sas)
       val ratioSas = meanSas/meanIid
       info(f"Random distribution $randomDistributions%d. SAS: Cramer-von-Mises test ratio (smaller is better): $ratioSas%.2f")
-      meanSas should be < meanIid
+      meanSas should be < qualityThreshold
     }
 
   }
