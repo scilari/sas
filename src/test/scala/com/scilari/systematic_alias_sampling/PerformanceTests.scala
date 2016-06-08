@@ -29,24 +29,34 @@ class PerformanceTests extends FlatSpec{
   }
 
   def warmUpAndMeasureTime(block: => Any, count: Int): Double = {
-    val dummy = measureTime(block, count)
+    val warmup1 = measureTime(block, count)
+    val warmup2 = measureTime(block, count)
     measureTime(block, count)
   }
 
+  // naive black hole implementation
+  object BlackHole{
+    var state: Double = 0
+    def consume(array: Array[Double]): Unit ={
+      state = array(0)
+    }
+  }
+
   val perfSampleCount = 110
-  val perfRunCount = 20000
+  val perfRunCount = 50000
+
+  //
+  val acmTime = warmUpAndMeasureTime({BlackHole.consume(normal.sample(perfSampleCount))}, perfRunCount)
 
   "SystematicAliasSampler performance" should "be at least 3X faster than Apache Commons Math NormalDistribution.sample()" in {
-    val sasTime = warmUpAndMeasureTime({val results = sas.sample(perfSampleCount)}, perfRunCount)
-    val acmTime = warmUpAndMeasureTime({val results = normal.sample(perfSampleCount)}, perfRunCount)
+    val sasTime = warmUpAndMeasureTime({BlackHole.consume(sas.sample(perfSampleCount))}, perfRunCount)
     val timeRatio = acmTime/sasTime
     info(f"Speed improvement of SAS over ACM NormalDistribution.sample(): $timeRatio%.2f")
     timeRatio should be > 3.0
   }
 
   it should "be faster than Apache Commons Math NormalDistribution.sample(), when using Golden Ratio sequence" in {
-    val sasTime = warmUpAndMeasureTime({val results = golden.sample(perfSampleCount)}, perfRunCount)
-    val acmTime = warmUpAndMeasureTime({val results = normal.sample(perfSampleCount)}, perfRunCount)
+    val sasTime = warmUpAndMeasureTime({BlackHole.consume(golden.sample(perfSampleCount))}, perfRunCount)
     val timeRatio = acmTime/sasTime
     info(f"Speed improvement of SAS (Golden) over ACM NormalDistribution.sample(): $timeRatio%.2f")
     timeRatio should be > 1.0
