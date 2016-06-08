@@ -20,7 +20,7 @@ import scala.reflect.ClassTag
   * @param tagV Implicit parameter for specializations.
   * @tparam VALUE_T Value type parameter.
   */
-class SystematicAliasSampler[@specialized(Double, Int) VALUE_T]
+class SystematicAliasSampler[@specialized(Double, Float, Int) VALUE_T]
 (
   pmf_ : Array[Double],
   values_ : Array[VALUE_T],
@@ -148,6 +148,11 @@ object SystematicAliasSampler{
   val BIN_COUNT_10000 = 10009
   val BIN_COUNT_100000 = 100003
 
+  // Specialized subclasses to allow easier inheritance (with more probable specialization)
+  class DoubleSampler(pmf: Array[Double], values: Array[Double], parameters: Parameters) extends SystematicAliasSampler[Double](pmf, values, parameters)
+  class FloatSampler(pmf: Array[Double], values: Array[Float], parameters: Parameters) extends SystematicAliasSampler[Float](pmf, values, parameters)
+  class IntSampler(pmf: Array[Double], values: Array[Int], parameters: Parameters) extends SystematicAliasSampler[Int](pmf, values, parameters)
+
   /**
     * Convenience method to create Systematic Alias Sampler from a continuous distribution by generating a corresponding
     * discrete approximation automatically.
@@ -164,10 +169,10 @@ object SystematicAliasSampler{
              maxX: Double,
              binCount: Int = BIN_COUNT_1000,
              parameters: Parameters = new Parameters()
-           ): SystematicAliasSampler[Double] = {
+           ): DoubleSampler = {
 
     val (pmf, points) = Util.distributionApproximation(distribution, minX, maxX, binCount)
-    new SystematicAliasSampler[Double](pmf, points, parameters)
+    new DoubleSampler(pmf, points, parameters)
   }
 
   /**
