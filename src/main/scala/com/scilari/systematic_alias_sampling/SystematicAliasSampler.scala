@@ -13,27 +13,26 @@ import scala.reflect.ClassTag
   *
   * (accepted to and to be published in ACM TOMS in 2016)
   *
-  *
-  * @param pmf_ Probability mass function values. Does not need to be normalized, as it is normalized by the class.
-  * @param values_ Values where the pmf is defined. Probability of values(i) is pmf(i).
+  * @param _pmf Probability mass function values. Does not need to be normalized, as it is normalized by the class.
+  * @param _values Values where the pmf is defined. Probability of values(i) is pmf(i).
   * @param parameters Parameter class instance.
   * @param tagV Implicit parameter for specializations.
   * @tparam VALUE_T Value type parameter.
   */
 class SystematicAliasSampler[@specialized(Double, Float, Int) VALUE_T]
 (
-  pmf_ : Array[Double],
-  values_ : Array[VALUE_T],
+  _pmf :Array[Double],
+  _values : Array[VALUE_T],
   parameters: Parameters = new Parameters()
 )( implicit tagV: ClassTag[VALUE_T] ) {
 
-  require(pmf_.length == values_.length, "Probability mass function array and values array are not the same length.")
-  require(pmf_.length >= 2, "Distribution does not have at least two values.")
+  require(_pmf.length == _values.length, "Probability mass function array and values array are not the same length.")
+  require(_pmf.length >= 2, "Distribution does not have at least two values.")
 
-  private[this] val binCount: Int = pmf_.length
+  private[this] val binCount: Int = _pmf.length
   // only protected because specialization generates access errors otherwise (for some reason)
-  protected[this] val pmf: Array[Double] = Util.normalizeSum(pmf_.clone(), 1.0)
-  private[this] val values: Array[VALUE_T] = values_.clone()
+  protected[this] val pmf: Array[Double] = Util.normalizeSum(_pmf.clone(), 1.0)
+  private[this] val values: Array[VALUE_T] = _values.clone()
 
   private[this] val (aliasedValues, aliasProbabilities) = SystematicAliasSampler.createAlias(pmf, values)
 
@@ -56,6 +55,7 @@ class SystematicAliasSampler[@specialized(Double, Float, Int) VALUE_T]
   /**
     * Samples a value from the underlying alias table structure. The returned value is deterministic with given, fixed
     * input.
+    *
     * @param randomInt  Random or otherwise generated integer (corresponding to bin)
     * @param randomDouble  Random or otherwise generated double (corresponding to selection between upper and lower bin)
     * @return
@@ -71,7 +71,7 @@ class SystematicAliasSampler[@specialized(Double, Float, Int) VALUE_T]
   /**
     * Convenience method to sample by using a single Double value in [0, binCount[ that is used to extract the integer
     * and fractional parts for sampling.
- *
+    *
     * @param randomDouble Double value in [0, binCount[
     * @return
     */
@@ -83,6 +83,7 @@ class SystematicAliasSampler[@specialized(Double, Float, Int) VALUE_T]
 
   /**
     * Systematic sampling of sampleCount samples.
+    *
     * @param sampleCount Number of samples.
     * @return
     */
@@ -91,6 +92,7 @@ class SystematicAliasSampler[@specialized(Double, Float, Int) VALUE_T]
   /**
     * Systematic sampling of sampleCount samples with control to provide the output array. Also uses an indexto keep
     * track of computed values to avoid explicit array concatenation in recursive calls.
+    *
     * @param sampleCount Number of samples.
     * @param results Output array.
     * @param fillFrom Index to keep track of computed values.
