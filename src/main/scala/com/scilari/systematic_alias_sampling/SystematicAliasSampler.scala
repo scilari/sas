@@ -17,14 +17,14 @@ import scala.reflect.ClassTag
   * @param _values Values where the pmf is defined. Probability of values(i) is pmf(i).
   * @param parameters Parameter class instance.
   * @param tagV Implicit parameter for specializations.
-  * @tparam VALUE_T Value type parameter.
+  * @tparam Value Value type parameter.
   */
-class SystematicAliasSampler[@specialized(Double, Float, Int) VALUE_T]
+class SystematicAliasSampler[@specialized(Double, Float, Int) Value]
 (
   _pmf :Array[Double],
-  _values : Array[VALUE_T],
+  _values : Array[Value],
   parameters: Parameters = new Parameters()
-)( implicit tagV: ClassTag[VALUE_T] ) {
+)( implicit tagV: ClassTag[Value] ) {
 
   require(_pmf.length == _values.length, "Probability mass function array and values array are not the same length.")
   require(_pmf.length >= 2, "Distribution does not have at least two values.")
@@ -32,7 +32,7 @@ class SystematicAliasSampler[@specialized(Double, Float, Int) VALUE_T]
   private[this] val binCount: Int = _pmf.length
   // only protected because specialization generates access errors otherwise (for some reason)
   protected[this] val pmf: Array[Double] = Util.normalizeSum(_pmf.clone(), 1.0)
-  private[this] val values: Array[VALUE_T] = _values.clone()
+  private[this] val values: Array[Value] = _values.clone()
 
   private[this] val (aliasedValues, aliasProbabilities) = SystematicAliasSampler.createAlias(pmf, values)
 
@@ -61,7 +61,7 @@ class SystematicAliasSampler[@specialized(Double, Float, Int) VALUE_T]
     * @return
     */
   @inline
-  def sample(randomInt: Int = random.nextInt(binCount), randomDouble: Double = random.nextDouble()): VALUE_T = {
+  def sample(randomInt: Int = random.nextInt(binCount), randomDouble: Double = random.nextDouble()): Value = {
     if(randomDouble <= aliasProbabilities(randomInt))
       aliasedValues(randomInt)
     else
@@ -75,7 +75,7 @@ class SystematicAliasSampler[@specialized(Double, Float, Int) VALUE_T]
     * @param randomDouble Double value in [0, binCount[
     * @return
     */
-  def sample(randomDouble: Double): VALUE_T = {
+  def sample(randomDouble: Double): Value = {
     val intPart = randomDouble.toInt
     val fracPart = randomDouble - intPart
     sample(intPart, fracPart)
@@ -87,7 +87,7 @@ class SystematicAliasSampler[@specialized(Double, Float, Int) VALUE_T]
     * @param sampleCount Number of samples.
     * @return
     */
-  def sample(sampleCount: Int): Array[VALUE_T] = sampleSystematic(sampleCount)
+  def sample(sampleCount: Int): Array[Value] = sampleSystematic(sampleCount)
 
   /**
     * Systematic sampling of sampleCount samples with control to provide the output array. Also uses an indexto keep
@@ -98,8 +98,8 @@ class SystematicAliasSampler[@specialized(Double, Float, Int) VALUE_T]
     * @param fillFrom Index to keep track of computed values.
     * @return
     */
-  def sampleSystematic(sampleCount: Int, results: Array[VALUE_T] = null, fillFrom: Int = 0): Array[VALUE_T] = {
-    val samples = if(results == null) new Array[VALUE_T](sampleCount) else results
+  def sampleSystematic(sampleCount: Int, results: Array[Value] = null, fillFrom: Int = 0): Array[Value] = {
+    val samples = if(results == null) new Array[Value](sampleCount) else results
     if(sampleCount > minBatchSize && isDivisibilityProblem(binCount, sampleCount)){
       val splitIndex: Int =
         if(sampleCount <= minRecurSize)
@@ -147,7 +147,7 @@ object SystematicAliasSampler{
   val BIN_COUNT_100 = 101
   val BIN_COUNT_250 = 251
   val BIN_COUNT_1000 = 1009
-  val BIN_COUNT_10000 = 10009
+  val BIN_COUNT_10000 = 10007
   val BIN_COUNT_100000 = 100003
 
   // Specialized subclasses to allow easier inheritance (with more probable specialization)
