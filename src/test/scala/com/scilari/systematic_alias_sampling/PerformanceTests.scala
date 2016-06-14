@@ -13,7 +13,7 @@ class PerformanceTests extends FlatSpec{
   val normal = new NormalDistribution()
   val distribution = (x: Double) => normal.density(x)
 
-  val sas = SystematicAliasSampler(distribution, -4.0, 4.0)
+  val sas = SystematicAliasSampler(distribution, -4.0, 4.0, SystematicAliasSampler.BIN_COUNT_10000)
   val golden = new GoldenRatioAliasSampler(sas.getPmf, sas.getValues)
 
   def nanosToMillis(nanos: Long): Double = nanos/1e6
@@ -42,7 +42,7 @@ class PerformanceTests extends FlatSpec{
     }
   }
 
-  val perfSampleCount = 110
+  val perfSampleCount = 1100
   val perfRunCount = 50000
 
   //
