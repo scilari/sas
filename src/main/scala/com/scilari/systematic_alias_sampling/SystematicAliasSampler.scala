@@ -90,7 +90,7 @@ class SystematicAliasSampler[@specialized(Double, Float, Int) Value]
   def sample(sampleCount: Int): Array[Value] = sampleSystematic(sampleCount)
 
   /**
-    * Systematic sampling of sampleCount samples with control to provide the output array. Also uses an indexto keep
+    * Systematic sampling of sampleCount samples with control to provide the output array. Also uses an index to keep
     * track of computed values to avoid explicit array concatenation in recursive calls.
     *
     * @param sampleCount Number of samples.
