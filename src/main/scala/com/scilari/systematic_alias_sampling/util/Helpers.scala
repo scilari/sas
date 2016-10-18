@@ -1,37 +1,30 @@
-package com.scilari.systematic_alias_sampling
+package com.scilari.systematic_alias_sampling.util
 
 import org.apache.commons.math3.random.Well512a
 
 import scala.math.Fractional
 import scala.reflect.ClassTag
-import scala.{specialized => spec}
+import scala.{specialized => sp}
 
 /**
   * Basic helper methods
- * Created by iv on 21.1.2014.
+  * Created by iv on 21.1.2014.
  */
-object Util {
-  def almostDivides(x: Double, y: Double, eps: Double): Boolean = {
-    @inline def distanceFromInt(x: Double) = { val i = x - x.toInt; math.min(i, 1.0 - i) }
-    val q = x/y
-    val d = distanceFromInt(q)
-    d < eps
-  }
-
+object Helpers {
   def distributionApproximation(distribution: Double => Double,
                                minX: Double,
                                maxX: Double,
                                binCount: Int)
                                (implicit num: Fractional[Double], tag: ClassTag[Double]): (Array[Double], Array[Double]) = {
     require(minX < maxX, "minX is not less than maxX.")
-    val points = Util.linspace(minX, maxX, binCount)
-    val pmf = Util.normalizeSum(points map distribution, 1.0)
+    val points = Helpers.linspace(minX, maxX, binCount)
+    val pmf = Helpers.normalizeSum(points map distribution, 1.0)
     (pmf, points)
   }
 
   val random = new Well512a()
 
-  def cumsum[@spec(Float, Double) T](a: Array[T])(implicit num: Fractional[T], tag: ClassTag[T]): Array[T] = {
+  def cumsum[@sp(Float, Double) T](a: Array[T])(implicit num: Fractional[T], tag: ClassTag[T]): Array[T] = {
     import num._
     val cs = new Array[T](a.length)
     cs(0) = a(0)
@@ -39,7 +32,7 @@ object Util {
     cs
   }
 
-  def normalizeSum[@spec(Float, Double) T](a: Array[T], to: T)(implicit num: Fractional[T], tag: ClassTag[T]): Array[T] = {
+  def normalizeSum[@sp(Float, Double) T](a: Array[T], to: T)(implicit num: Fractional[T], tag: ClassTag[T]): Array[T] = {
     import num._
     val invSum = to / a.sum
     a map {
@@ -47,7 +40,7 @@ object Util {
     }
   }
 
-  def linspace[@spec(Float, Double) T](minX: T, maxX: T, pointCount: Int)
+  def linspace[@sp(Float, Double) T](minX: T, maxX: T, pointCount: Int)
                                       (implicit num: Fractional[T], tag: ClassTag[T]): Array[T] = {
     import num._
     val step = (maxX - minX) / fromInt(pointCount - 1)
@@ -93,8 +86,8 @@ object Util {
     a
   }
 
-  class ArrayShuffler[@spec(Float, Double) T](val n: Int)(implicit tag: ClassTag[T]) {
-    val indices = util.Random.shuffle((0 until n).toList).toArray
+  class ArrayShuffler[@sp(Float, Double) T](val n: Int)(implicit tag: ClassTag[T]) {
+    val indices = scala.util.Random.shuffle((0 until n).toList).toArray
 
     //println(indices.mkString(" "))
     def shuffle(array: Array[T]): Array[T] = {

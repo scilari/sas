@@ -1,6 +1,6 @@
-package com.scilari.systematic_alias_sampling
+package com.scilari.systematic_alias_sampling.util
 
-import com.scilari.systematic_alias_sampling.Util._
+import Helpers._
 
 /**
   * Basic goodness-of-fit tests
@@ -35,8 +35,6 @@ object StatisticalTests {
     * @return
     */
   def KL(P: Array[Double], Q: Array[Double]): Double = {
-    //    println("P.sum = " + P.sum)
-    //    println("Q.sum = " + Q.sum)
     val dP = P.sum - 1.0
     val dQ = Q.sum - 1.0
     P(P.indexWhere(_ > dP)) -= dP
@@ -44,14 +42,6 @@ object StatisticalTests {
     ((P, Q).zipped map ((p, q) => {
       if (p > 0.0 && q > 0.0) math.log(p / q) * p else 0.0
     })).sortWith((x, y) => math.abs(x) < math.abs(y)).sum
-    //if(kld < 0){
-    //      println("KLD fail")
-    //      println("P.sum = " + P.sum)
-    //      println("Q.sum = " + Q.sum)
-    //      println(P.mkString("P: [", "\n", "]"))
-    //      println(Q.mkString("Q: [", "\n", "]"))
-    //0
-    //} else kld
   }
 
   /**
