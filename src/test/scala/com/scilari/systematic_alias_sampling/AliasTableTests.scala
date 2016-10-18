@@ -1,5 +1,7 @@
 package com.scilari.systematic_alias_sampling
 
+import com.scilari.systematic_alias_sampling.core.AliasTable
+import com.scilari.systematic_alias_sampling.util.Helpers
 import org.apache.commons.math3.distribution.NormalDistribution
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers._
@@ -12,18 +14,15 @@ class AliasTableTests extends FlatSpec{
   val distribution = (x: Double) => normal.density(x)
 
   val binCount = 100
-  val (pmf, _) = Util.distributionApproximation(distribution, -4.0, 4.0, binCount)
-  val sas = new SystematicAliasSampler[Int](pmf, (0 until binCount).toArray)
-
-  val values = sas.getValues
-  val aliasedValues = sas.getAliasedValues
-  val aliasProbabilities = sas.getAliasProbabilities
+  val (pmf, _) = Helpers.distributionApproximation(distribution, -4.0, 4.0, binCount)
+  val values = (0 until binCount).toArray
+  val aliasTable = new AliasTable(pmf, values)
 
   val probabilitySum = new Array[Double](binCount)
 
   for(i <- 0 until binCount){
-    probabilitySum(i) += (1.0 - aliasProbabilities(i))/binCount
-    probabilitySum(aliasedValues(i)) += aliasProbabilities(i)/binCount
+    probabilitySum(i) += (1.0 - aliasTable.aliasProbabilities(i))/binCount
+    probabilitySum(aliasTable.aliasedValues(i)) += aliasTable.aliasProbabilities(i)/binCount
   }
 
   "Alias table probabilities" should "sum up to the original distribution" in {
