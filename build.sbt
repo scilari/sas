@@ -1,8 +1,10 @@
 name := "systematic-alias-sampling"
 
-version := "1.0"
+version := "1.0-SNAPSHOT"
 
 scalaVersion := "2.11.8"
+
+organization := "com.scilari"
 
 resolvers += Resolver.jcenterRepo
 
