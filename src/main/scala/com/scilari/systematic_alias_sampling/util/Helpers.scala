@@ -1,6 +1,6 @@
 package com.scilari.systematic_alias_sampling.util
 
-import org.apache.commons.math3.random.Well512a
+import com.scilari.systematic_alias_sampling.models.Random
 
 import scala.math.Fractional
 import scala.reflect.ClassTag
@@ -22,7 +22,7 @@ object Helpers {
     (pmf, points)
   }
 
-  val random = new Well512a()
+  val random = Random.default
 
   def cumsum[@sp(Float, Double) T](a: Array[T])(implicit num: Fractional[T], tag: ClassTag[T]): Array[T] = {
     import num._

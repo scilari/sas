@@ -1,6 +1,6 @@
 package com.scilari.systematic_alias_sampling.core
 
-import org.apache.commons.math3.random.{RandomGenerator, Well512a}
+import com.scilari.systematic_alias_sampling.models.Random
 
 /**
   * Parameter class for the SystematicAliasSampler
@@ -14,7 +14,7 @@ import org.apache.commons.math3.random.{RandomGenerator, Well512a}
   * @param batchSplitDenominator Denominator to define the ratio in which the batch sizes are determined in the recursion.
   */
 class Parameters(
-  val random: RandomGenerator = Parameters.Default.random,
+  val random: Random = Parameters.Default.random,
   val isDivisibilityProblem: (Int, Int) => Boolean = Parameters.Default.isDivisibilityProblem,
   val minBatchSize: Int = Parameters.Default.minBatchSize,
   val minRecurSize: Int = Parameters.Default.minRecurSize,
@@ -25,7 +25,7 @@ class Parameters(
 
 object Parameters{
   object Default{
-    def random = new Well512a()
+    def random: Random = Random.default
 
     val divEpsilon = 0.07
 

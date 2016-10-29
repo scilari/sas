@@ -1,7 +1,7 @@
 package com.scilari.systematic_alias_sampling.core
 
+import com.scilari.systematic_alias_sampling.models.Random
 import com.scilari.systematic_alias_sampling.util.Helpers
-import org.apache.commons.math3.random.RandomGenerator
 
 import scala.reflect.ClassTag
 import scala.{specialized => sp}
@@ -23,7 +23,7 @@ trait SystematicAliasSampler[@sp(Int, Double, Float) T] extends AliasSampler[T] 
   val parameters: Parameters = new Parameters()
   // init parameters
   import parameters._
-  override val random: RandomGenerator = parameters.random
+  override val random: Random = parameters.random
 
   /**
     * Systematic sampling of sampleCount samples.

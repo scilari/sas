@@ -1,8 +1,7 @@
 package com.scilari.systematic_alias_sampling.core
 
+import com.scilari.systematic_alias_sampling.models.{Random, DiscreteDistribution, Sampler}
 import com.scilari.systematic_alias_sampling.util.Helpers
-import com.scilari.systematic_alias_sampling.{DiscreteDistribution, Sampler}
-import org.apache.commons.math3.random.RandomGenerator
 
 import scala.reflect.ClassTag
 import scala.{specialized => sp}
@@ -18,7 +17,7 @@ trait AliasSampler[@sp(Int, Double, Float) T] extends Sampler[T] with DiscreteDi
   protected var _aliasProbabilities: Array[Double] = _
   protected var _binCount: Int = _
 
-  val random: RandomGenerator = Parameters.Default.random
+  val random: Random = Parameters.Default.random
 
   /**
     * Samples a random value from the underlying alias table structure.
