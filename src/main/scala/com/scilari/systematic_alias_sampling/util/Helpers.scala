@@ -22,6 +22,10 @@ object Helpers {
     (pmf, points)
   }
 
+  class NormalDistribution(mean: Double, dev: Double){
+    def density(x: Double) = 1.0/(math.sqrt(2*math.Pi)*dev)*math.exp(-(x - mean)*(x - mean)/(2.0*dev*dev))
+  }
+
   val random = Random.default
 
   def cumsum[@sp(Float, Double) T](a: Array[T])(implicit num: Fractional[T], tag: ClassTag[T]): Array[T] = {
