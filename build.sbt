@@ -3,7 +3,7 @@ name := "systematic-alias-sampling"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion in ThisBuild := "2.11.8"
+scalaVersion in ThisBuild := "2.10.1"
 
 organization := "com.scilari"
 
