@@ -9,6 +9,8 @@ organization := "com.scilari"
 
 resolvers += Resolver.jcenterRepo
 
+resolvers += Resolver.mavenLocal
+
 libraryDependencies += "org.apache.commons" % "commons-math3" % "3.2" % "test"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.0" % "test"
 
