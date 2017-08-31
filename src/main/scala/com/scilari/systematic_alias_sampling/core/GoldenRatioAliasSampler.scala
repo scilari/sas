@@ -9,7 +9,6 @@ import scala.reflect.ClassTag
 trait GoldenRatioAliasSampler[@specialized(Int, Double, Float) T] extends AliasSampler[T] {
   val generator = new GoldenRatioAliasSampler.GoldenRatioSequenceGenerator()
 
-
   override def sample(sampleCount: Int): Array[T] = sampleGolden(sampleCount)
 
   @inline
