@@ -44,6 +44,7 @@ trait AliasSampler[@sp(Int, Double, Float) T] extends Sampler[T] with DiscreteDi
 
   /**
     * Initializes the data structures.
+    *
     * @param pmf Probability mass function.
     * @param values Masses corresponding to the probability mass function.
     */
