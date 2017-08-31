@@ -29,13 +29,20 @@ trait SystematicAliasSampler[@sp(Int, Double, Float) T] extends AliasSampler[T] 
     * Systematic sampling of sampleCount samples.
     *
     * @param sampleCount Number of samples.
-    * @return
+    * @return Batch of possibly partially ordered samples.
     */
   override def sample(sampleCount: Int): Array[T] = {
     sampleSystematic(sampleCount, new Array[T](sampleCount))
   }
 
-  override def sample(sampleCount: Int, output: Array[T]) = sampleSystematic(sampleCount, output)
+  /**
+    * Systematic sampling of sampleCount samples using a pre-created output array.
+    *
+    * @param sampleCount Number of samples.
+    * @param output Pre-created output array.
+    * @return Batch of possibly partially ordered samples.
+    */
+  override def sample(sampleCount: Int, output: Array[T]): Array[T] = sampleSystematic(sampleCount, output)
 
   /**
     * Systematic sampling of sampleCount samples with control to provide the output array. Also uses an index to keep
@@ -44,7 +51,7 @@ trait SystematicAliasSampler[@sp(Int, Double, Float) T] extends AliasSampler[T] 
     * @param sampleCount Number of samples.
     * @param samples Output array.
     * @param fillFrom Index to keep track of computed values.
-    * @return
+    * @return Batch of possibly partially ordered samples.
     */
   def sampleSystematic(sampleCount: Int, samples: Array[T], fillFrom: Int = 0): Array[T] = {
     if(sampleCount > minBatchSize && isDivisibilityProblem(_binCount, sampleCount)){
