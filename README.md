@@ -64,13 +64,13 @@ sampler.sample(100, output)
 ```
 Note that the produced samples are somewhat or completely ordered, so if you want to use them e.g. in a particle
 filtering application, you should shuffle them before using them e.g. to propagate the particles. Helpers provide
-a convenience method for shuffling the samples using a precomputed permutation with random offset with each shuffle.
+a convenience method for shuffling the samples using a precomputed permutation with random offset on each shuffle.
  
  ```
  import com.scilari.systematic_alias_sampling.util.Helpers.ArrayShuffler
  
  val shuffler = new ArrayShuffler(100)
  shuffledA = shuffler.shuffle(batchA)
- shuffledB = shuffler.shuffle(batchB) 
+ shuffledB = shuffler.shuffle(output) 
  
  ```
