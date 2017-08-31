@@ -9,25 +9,23 @@ import scala.reflect.ClassTag
   *
   * @param pmf    Probability mass function.
   * @param values Values corresponding to the probability mass function.
-  * @tparam T
+  * @tparam T Value type class tag
   */
 class AliasTable[T: ClassTag](val pmf: Array[Double], val values: Array[T]) {
   require(math.abs(pmf.sum - 1.0) < 1e-6, "Probability masses do not sum to one.")
   require(pmf.length == values.length, "Probability mass and value arrays are not the same size")
   val (aliasedIndices, aliasProbabilities) = create(pmf)
-  val aliasedValues = aliasedIndices.map{values(_)}
+  val aliasedValues: Array[T] = aliasedIndices.map{values}
 
   /**
     * Creates the alias table structure
     *
-    * @param pmf    Probability mass function.
+    * @param pmf Probability mass function.
     * @return Tuple of aliasedIndices and corresponding aliasProbabilities.
     */
   def create(pmf: Array[Double]): (Array[Int], Array[Double]) = {
     val n = pmf.length
-    val q = pmf.map {
-      n.toDouble * _
-    }
+    val q = pmf.map { n.toDouble * _}
     // Using stacks to retain spatial order
     val (g, h) = mutable.Stack(0 until n: _*).partition { i => q(i) >= 1.0 } // indices of greater and smaller items
     val a = (0 until n).toArray // aliasIndices
