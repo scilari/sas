@@ -5,6 +5,7 @@ import com.scilari.systematic_alias_sampling.util.Helpers
 import org.apache.commons.math3.distribution.NormalDistribution
 
 /**
+  * Timing and density generation test utilities.
   * Created by iv on 8/22/2016.
   */
 object TestUtil {
@@ -18,7 +19,7 @@ object TestUtil {
       val t0 = System.nanoTime()
       for (i <- 0 until count) {
         val dummy: T = block
-        //BlackHole.consumeAny(dummy)
+        BlackHole.consumeAny(dummy)
       }
       nanosToMillis(System.nanoTime() - t0)
     }
@@ -52,13 +53,12 @@ object TestUtil {
 
   object Misc{
     val normal = new NormalDistribution()
-    val normalDistributionDensity = (x: Double) => normal.density(x)
+    val normalDistributionDensity: Double => Double = (x: Double) => normal.density(x)
 
-    val minX = -4
-    val maxX = 4
-    val binCount = SystematicAliasSampler.BIN_COUNT_10000
+    val minX: Double = -4.0
+    val maxX: Double  = 4.0
+    val binCount: Int  = SystematicAliasSampler.BIN_COUNT_10000
     val (pmf, values) = Helpers.distributionApproximation(normalDistributionDensity, minX, maxX, binCount)
-    //val normalSas = SystematicAliasSampler.fromDistribution(normalDistributionDensity, minX, maxX, binCount)
     val normalSas: AliasSampler[Double] = SystematicAliasSampler(pmf, values)
     val normalGolden: AliasSampler[Double] = GoldenRatioAliasSampler(pmf, values)
 
