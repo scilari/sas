@@ -70,7 +70,7 @@ a convenience method for shuffling the samples using a precomputed permutation w
  import com.scilari.systematic_alias_sampling.util.Helpers.ArrayShuffler
  
  val shuffler = new ArrayShuffler(100)
- shuffledA = shuffler.shuffle(batchA)
- shuffledOutput = shuffler.shuffle(output) 
+ val shuffledA = shuffler.shuffle(batchA)
+ val shuffledOutput = shuffler.shuffle(output) 
  
  ```
