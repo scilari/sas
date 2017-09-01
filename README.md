@@ -32,7 +32,7 @@ val sampler = SystematicAliasSampler(pmf, values)
 ```
 
 **Using helpers:**
-```
+``` scala
 import com.scilari.systematic_alias_sampling.core._
 import com.scilari.systematic_alias_sampling.util.Helpers
 
@@ -50,7 +50,7 @@ val sampler = SystematicAliasSampler(pmf, values)
 In order to benefit from the better goodness-of-fit and performance characteristics, generate samples in batches.
 The sampler provides several methods to generate the samples. 
 
-```
+``` scala
 // batch sampling
 val batchA = sampler.sample(100)
 val batchB = sampler.sample(273)
@@ -66,7 +66,7 @@ Note that the produced samples are somewhat or completely ordered, so if you wan
 filtering application, you should shuffle them before using them e.g. to propagate the particles. Helpers provide
 a convenience method for shuffling the samples using a precomputed permutation with random offset on each shuffle.
  
- ```
+ ``` scala
  import com.scilari.systematic_alias_sampling.util.Helpers.ArrayShuffler
  
  val shuffler = new ArrayShuffler(100)
