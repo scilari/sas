@@ -22,7 +22,7 @@ In order to sample, first create the needed structures based on the given discre
 You can provide the values and their probabilities either manually or by using the helper methods.
 
 **Manual way:**
-```
+``` scala
 import com.scilari.systematic_alias_sampling.core._
 
 val values = Array(-0.2, -0.1, 0.0, 0.1, 0.3) // possible values
