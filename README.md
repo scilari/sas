@@ -3,7 +3,9 @@
 ![Alt text](./sas.png?raw=true "Illustration of Systematic Alias Sampling")
 
 
-The code here implements the method described in paper 
+The Alias Method by Walker offers an elegant way to sample from a discrete distribution in constant time.
+A good explanation of the method can be found [here](http://www.keithschwarz.com/darts-dice-coins/). 
+The code here implements a systematic version of the Alias Method described in paper 
 
 Vallivaara et al. 
 *"Systematic Alias Sampling: an efficient and low-variance way to sample from a discrete distribution"*
@@ -14,7 +16,8 @@ Article No. 18
 
 http://dl.acm.org/citation.cfm?id=2935745
 
-The method achieves 5-20X speed up compared to Apache Commons Math NormalDistribution.sample() when sampling in batches. The empirical distribution of the batches also have significantly better goodness-of-fit according to Cramer-Von-Mises statistic.
+The method achieves 5-20X speed up compared to Apache Commons Math NormalDistribution.sample() when sampling in batches. 
+The empirical distribution of the batches also have significantly better goodness-of-fit according to Cramer-Von-Mises statistic.
 
 ## Usage
 #### Constructing the sampler:
