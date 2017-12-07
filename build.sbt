@@ -11,6 +11,8 @@ resolvers += Resolver.jcenterRepo
 
 resolvers in ThisBuild += Resolver.mavenLocal
 
+addCompilerPlugin("org.psywerx.hairyfotr" %% "linter" % "0.1.17")
+
 libraryDependencies += "org.apache.commons" % "commons-math3" % "3.2" % "test"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.0" % "test"
 
