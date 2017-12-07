@@ -1,4 +1,3 @@
-*.class
 *.log
 
 # sbt specific
@@ -7,7 +6,6 @@
 dist/*
 target/
 lib_managed/
-src_managed/
 project/boot/
 project/plugins/project/
 
@@ -17,7 +15,6 @@ project/plugins/project/
 
 # IntelliJ Idea specific
 .idea/
-project/
+project/project/
 *.ipr
 *.iws
-out
