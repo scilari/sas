@@ -80,3 +80,4 @@ a convenience method for shuffling the samples using a precomputed permutation w
  
  ## External links
  * C++ implementation of the method by Bolong Zhang is available [here](https://github.com/bolongz/Systematic-Alias-Sampling).
+ 
