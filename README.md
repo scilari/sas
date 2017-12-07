@@ -4,7 +4,7 @@
 
 
 The Alias Method by Walker offers an elegant way to sample from a discrete distribution in constant time.
-A good explanation of the method can be found [here](http://www.keithschwarz.com/darts-dice-coins/). 
+A good explanation of the method can be found [here](http://www.keithschwarz.com/darts-dice-coins). 
 The code here implements a systematic version of the Alias Method described in paper 
 
 Vallivaara et al. 
