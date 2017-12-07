@@ -56,10 +56,12 @@ trait SystematicAliasSampler[@sp(Int, Double, Float) T] extends AliasSampler[T] 
   def sampleSystematic(sampleCount: Int, samples: Array[T], fillFrom: Int = 0): Array[T] = {
     if(sampleCount > minBatchSize && isDivisibilityProblem(_binCount, sampleCount)){
       val splitIndex: Int =
-        if(sampleCount <= minRecurSize)
+        if(sampleCount <= minRecurSize){
           minBatchSize
-        else
+        } else {
           sampleCount * batchSplitNumerator / batchSplitDenominator
+        }
+
       sampleSystematic(sampleCount - splitIndex, samples, fillFrom)
       sampleSystematic(splitIndex, samples, fillFrom + sampleCount - splitIndex)
     }
@@ -106,7 +108,9 @@ object SystematicAliasSampler{
   type DoubleSampler = SystematicAliasSamplerBase[Double]
   type FloatSampler = SystematicAliasSamplerBase[Float]
 
-  class SystematicAliasSamplerBase[@sp(Int, Double, Float) T](pmf: Array[Double], values: Array[T])(implicit val classTag: ClassTag[T]) extends SystematicAliasSampler[T]{
+  class SystematicAliasSamplerBase[@sp(Int, Double, Float) T]
+  (pmf: Array[Double], values: Array[T])(implicit val classTag: ClassTag[T])
+    extends SystematicAliasSampler[T]{
     init(pmf, values)
   }
 

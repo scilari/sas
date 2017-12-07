@@ -5,5 +5,5 @@ package com.scilari.systematic_alias_sampling.models
   */
 trait DiscreteDistribution {
   def pmf: Array[Double]
-  def cdf: Array[Double] = pmf.scanLeft(0.0)(_+_).tail
+  def cdf: Array[Double] = pmf.scanLeft(0.0)(_ + _).tail
 }

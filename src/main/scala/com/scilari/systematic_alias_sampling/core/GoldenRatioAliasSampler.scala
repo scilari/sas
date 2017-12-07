@@ -12,8 +12,8 @@ trait GoldenRatioAliasSampler[@specialized(Int, Double, Float) T] extends AliasS
   override def sample(sampleCount: Int): Array[T] = sampleGolden(sampleCount)
 
   @inline
-  def sampleGolden(sampleCount: Int, array: Array[T] = null)(implicit classTag: ClassTag[T]): Array[T] = {
-    val a = if(array == null) new Array[T](sampleCount) else array
+  def sampleGolden(sampleCount: Int, array: Array[T] = Array.empty[T])(implicit classTag: ClassTag[T]): Array[T] = {
+    val a = if(array.isEmpty) new Array[T](sampleCount) else array
     val b = _binCount.toDouble
     var i = 0
     while(i < sampleCount){
@@ -26,11 +26,14 @@ trait GoldenRatioAliasSampler[@specialized(Int, Double, Float) T] extends AliasS
 }
 
 object GoldenRatioAliasSampler{
-  class GoldenRatioAliasSamplerBase[@specialized(Int, Double, Float) T: ClassTag](pmf: Array[Double], values: Array[T])(implicit val classTag: ClassTag[T]) extends GoldenRatioAliasSampler[T]{
+  class GoldenRatioAliasSamplerBase[@specialized(Int, Double, Float) T: ClassTag]
+  (pmf: Array[Double], values: Array[T])(implicit val classTag: ClassTag[T])
+    extends GoldenRatioAliasSampler[T]{
     init(pmf, values)
   }
 
-  def apply[@specialized(Int, Double, Float) T : ClassTag](pmf: Array[Double], values: Array[T]): AliasSampler[T] = new GoldenRatioAliasSamplerBase[T](pmf, values)
+  def apply[@specialized(Int, Double, Float) T : ClassTag]
+  (pmf: Array[Double], values: Array[T]): AliasSampler[T] = new GoldenRatioAliasSamplerBase[T](pmf, values)
 
   class GoldenRatioSequenceGenerator(seed: Double = Parameters.Default.random.nextDouble()) {
     private[this] var x = seed

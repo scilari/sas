@@ -23,10 +23,10 @@ object Helpers {
   }
 
   class NormalDistribution(mean: Double, dev: Double){
-    def density(x: Double) = 1.0/(math.sqrt(2*math.Pi)*dev)*math.exp(-(x - mean)*(x - mean)/(2.0*dev*dev))
+    def density(x: Double): Double = 1.0/(math.sqrt(2*math.Pi)*dev)*math.exp(-(x - mean)*(x - mean)/(2.0*dev*dev))
   }
 
-  val random = Random.default
+  val random: Random = Random.default
 
   def cumsum[@sp(Float, Double) T](a: Array[T])(implicit num: Fractional[T], tag: ClassTag[T]): Array[T] = {
     import num._
@@ -83,26 +83,28 @@ object Helpers {
 
   def sampleNormal(dev: Double = 1.0, k: Int): Array[Double] = {
     val a = new Array[Double](k)
-    if (dev != 1.0)
+    if (dev != 1.0){
       for (i <- 0 until k) a(i) = sampleNormal(dev)
-    else
+    } else {
       for (i <- 0 until k) a(i) = sampleNormal()
+    }
     a
   }
 
   class ArrayShuffler[@sp(Float, Double) T](val n: Int)(implicit tag: ClassTag[T]) {
-    val indices = scala.util.Random.shuffle((0 until n).toList).toArray
+    val indices: Array[Int] = scala.util.Random.shuffle((0 until n).toList).toArray
 
-    //println(indices.mkString(" "))
     def shuffle(array: Array[T]): Array[T] = {
       val shuffled = new Array[T](n)
       val offset = random.nextInt(n)
       for (i <- array.indices) {
         val ix = i + offset
-        if (ix < n)
+        if (ix < n){
           shuffled(i) = array(indices(ix))
-        else
+        } else {
           shuffled(i) = array(indices(ix - n))
+        }
+
 
       }
       shuffled

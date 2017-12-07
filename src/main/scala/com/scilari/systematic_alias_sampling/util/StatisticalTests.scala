@@ -7,34 +7,34 @@ import Helpers._
   * Created by iv on 5/25/2016.
   */
 object StatisticalTests {
-  val invLogOf2 = 1.0 / math.log(2.0)
-  def log2(x: Double) = math.log(x) * invLogOf2
+  val invLogOf2: Double = 1.0 / math.log(2.0)
+  def log2(x: Double): Double = math.log(x) * invLogOf2
 
   /**
     * Jensen-Shannon divergence (by Pauli Rikula)
     *
-    * @param P
-    * @param Q
+    * @param P distribution
+    * @param Q distribution
     * @return
     */
-  def JSD(P: Array[Double], Q: Array[Double]): Double = {
-    def H(P: Array[Double]): Double = {
+  def jsd(P: Array[Double], Q: Array[Double]): Double = {
+    def h(P: Array[Double]): Double = {
       -1.0 * (P map { p => if (p > 0.0) p * log2(p) else 0.0 }).sum
     }
-    H((P, Q).zipped map ((p, q) => {
+    h((P, Q).zipped map ((p, q) => {
       (p + q) / 2.0
-    })) - 0.5 * H(P) - 0.5 * H(Q)
+    })) - 0.5 * h(P) - 0.5 * h(Q)
   }
 
 
   /**
     * Kullback-Leibler divergence
     *
-    * @param P
-    * @param Q
+    * @param P distribution
+    * @param Q distribution
     * @return
     */
-  def KL(P: Array[Double], Q: Array[Double]): Double = {
+  def kl(P: Array[Double], Q: Array[Double]): Double = {
     val dP = P.sum - 1.0
     val dQ = Q.sum - 1.0
     P(P.indexWhere(_ > dP)) -= dP
@@ -47,19 +47,19 @@ object StatisticalTests {
   /**
     * Hellinger distance
     *
-    * @param P
-    * @param Q
+    * @param P distribution
+    * @param Q distribution
     * @return
     */
-  def HellingerD(P: Array[Double], Q: Array[Double]): Double = {
+  def hellingerD(P: Array[Double], Q: Array[Double]): Double = {
     1.0 / math.sqrt(2) * math.sqrt(((P, Q).zipped map ((p, q) => math.pow(math.sqrt(p) - math.sqrt(q), 2.0))).sum)
   }
 
   /**
     * Chi squared
     *
-    * @param P
-    * @param Q
+    * @param P distribution
+    * @param Q distribution
     * @return
     */
   def chiSquared(P: Array[Double], Q: Array[Double]): Double = {
@@ -72,11 +72,11 @@ object StatisticalTests {
   /**
     * Kolmogorov-Smirnov statistic
     *
-    * @param P
-    * @param Q
+    * @param P distribution
+    * @param Q distribution
     * @return
     */
-  def KSS(P: Array[Double], Q: Array[Double]): Double = {
+  def kss(P: Array[Double], Q: Array[Double]): Double = {
     val F1 = cumsum(P)
     val F2 = cumsum(Q)
     val differences = (F1, F2).zipped map { (x1, x2) => math.abs(x1 - x2) }
@@ -86,8 +86,8 @@ object StatisticalTests {
   /**
     * Modified Cramer-Von Mises
     *
-    * @param P
-    * @param Q
+    * @param P distribution
+    * @param Q distribution
     */
   def cramerVonMises(P: Array[Double], Q: Array[Double]): Double = {
     val squaredDiffs = (cumsum(P), cumsum(Q)).zipped map { (x1, x2) => (x1 - x2) * (x1 - x2) }
