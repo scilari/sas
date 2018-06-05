@@ -27,7 +27,7 @@ object Parameters{
   object Default{
     def random: Random = Random.default
 
-    val divEpsilon = 0.07
+    val divEpsilon: Double = 0.07
 
     /**
       * Checks if sampleCount or sampleCount/2 divide binCount or measurements near it (closer than range).
