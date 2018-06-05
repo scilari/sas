@@ -53,7 +53,7 @@ trait SystematicAliasSampler[@sp(Int, Double, Float) T] extends AliasSampler[T] 
     * @param fillFrom Index to keep track of computed values.
     * @return Batch of possibly partially ordered samples.
     */
-  def sampleSystematic(sampleCount: Int, samples: Array[T], fillFrom: Int = 0): Array[T] = {
+  private[this] def sampleSystematic(sampleCount: Int, samples: Array[T], fillFrom: Int = 0): Array[T] = {
     if(sampleCount > minBatchSize && isDivisibilityProblem(_binCount, sampleCount)){
       val splitIndex: Int =
         if(sampleCount <= minRecurSize){

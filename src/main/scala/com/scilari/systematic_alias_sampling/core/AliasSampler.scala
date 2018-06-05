@@ -34,7 +34,7 @@ trait AliasSampler[@sp(Int, Double, Float) T] extends Sampler[T] with DiscreteDi
     * @param randomDouble  Random or otherwise generated double (corresponding to selection between upper and lower bin)
     * @return Single (determimistic) sample.
     */
-  def sample(randomInt: Int, randomDouble: Double): T = {
+  protected def sample(randomInt: Int, randomDouble: Double): T = {
     if(randomDouble <= _aliasProbabilities(randomInt)) {
       _aliasedValues(randomInt)
     } else {
