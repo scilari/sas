@@ -20,7 +20,7 @@ import scala.{specialized => sp}
   *
   */
 trait SystematicAliasSampler[@sp(Int, Double, Float) T] extends AliasSampler[T] {
-  val parameters: Parameters = new Parameters()
+  val parameters: Parameters = Parameters()
   // init parameters
   import parameters._
   override val random: Random = parameters.random
@@ -130,7 +130,7 @@ object SystematicAliasSampler{
     minX: Double,
     maxX: Double,
     binCount: Int = SystematicAliasSampler.BIN_COUNT_1000,
-    parameters: Parameters = new Parameters()
+    parameters: Parameters = Parameters()
   ): SystematicAliasSampler[Double] = {
 
     val (pmf, points) = Helpers.distributionApproximation(distribution, minX, maxX, binCount)

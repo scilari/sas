@@ -13,13 +13,13 @@ import com.scilari.systematic_alias_sampling.models.Random
   * @param batchSplitNumerator Numerator to define the ratio in which the batch sizes are determined in the recursion.
   * @param batchSplitDenominator Denominator to define the ratio in which the batch sizes are determined in the recursion.
   */
-class Parameters(
-  val random: Random = Parameters.Default.random,
-  val isDivisibilityProblem: (Int, Int) => Boolean = Parameters.Default.isDivisibilityProblem,
-  val minBatchSize: Int = Parameters.Default.minBatchSize,
-  val minRecurSize: Int = Parameters.Default.minRecurSize,
-  val batchSplitNumerator: Int = Parameters.Default.batchSplitNumerator,
-  val batchSplitDenominator: Int = Parameters.Default.batchSplitDenominator
+case class Parameters(
+  random: Random = Parameters.Default.random,
+  isDivisibilityProblem: (Int, Int) => Boolean = Parameters.Default.isDivisibilityProblem,
+  minBatchSize: Int = Parameters.Default.minBatchSize,
+  minRecurSize: Int = Parameters.Default.minRecurSize,
+  batchSplitNumerator: Int = Parameters.Default.batchSplitNumerator,
+  batchSplitDenominator: Int = Parameters.Default.batchSplitDenominator
 ) {
 }
 
@@ -41,11 +41,11 @@ object Parameters{
         almostDivides(binCount*6, sampleCount, divEpsilon)
     }
 
-    val minBatchSize = 16
-    val minRecurSize = 4*minBatchSize
+    val minBatchSize: Int = 16
+    val minRecurSize: Int = 4*minBatchSize
 
-    val batchSplitNumerator = 7
-    val batchSplitDenominator = 13
+    val batchSplitNumerator: Int = 7
+    val batchSplitDenominator: Int = 13
   }
 
 }
