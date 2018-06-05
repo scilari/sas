@@ -37,7 +37,7 @@ object GoldenRatioAliasSampler{
 
   class GoldenRatioSequenceGenerator(seed: Double = Parameters.Default.random.nextDouble()) {
     private[this] var x = seed
-    private[this] val gr = 0.6180339887498948482 // golden ratio conjugate
+    private[this] val gr = 0.618033988749 // golden ratio conjugate
     @inline
     def next(): Double = {
       x += gr
