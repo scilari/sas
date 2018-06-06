@@ -20,7 +20,7 @@ import scala.{specialized => sp}
   *
   */
 trait SystematicAliasSampler[@sp(Int, Double, Float) T] extends AliasSampler[T] {
-  val parameters: Parameters = Parameters()
+  val parameters: Parameters
   // init parameters
   import parameters._
   override val random: Random = parameters.random
@@ -101,7 +101,9 @@ object SystematicAliasSampler{
   val BIN_COUNT_10000 = 10007
   val BIN_COUNT_100000 = 100003
 
-  def apply[@sp(Int, Double, Float) T : ClassTag](pmf: Array[Double], values: Array[T]): AliasSampler[T] = new SystematicAliasSamplerBase[T](pmf, values)
+  def apply[@sp(Int, Double, Float) T : ClassTag]
+  (pmf: Array[Double], values: Array[T], parameters: Parameters = Parameters()): AliasSampler[T] =
+    new SystematicAliasSamplerBase[T](pmf, values, parameters)
 
 
   type IntSampler = SystematicAliasSamplerBase[Int]
@@ -109,7 +111,7 @@ object SystematicAliasSampler{
   type FloatSampler = SystematicAliasSamplerBase[Float]
 
   class SystematicAliasSamplerBase[@sp(Int, Double, Float) T]
-  (pmf: Array[Double], values: Array[T])(implicit val classTag: ClassTag[T])
+  (pmf: Array[Double], values: Array[T], val parameters: Parameters = Parameters())(implicit val classTag: ClassTag[T])
     extends SystematicAliasSampler[T]{
     init(pmf, values)
   }
@@ -134,7 +136,7 @@ object SystematicAliasSampler{
   ): SystematicAliasSampler[Double] = {
 
     val (pmf, points) = Helpers.distributionApproximation(distribution, minX, maxX, binCount)
-    new SystematicAliasSamplerBase[Double](pmf, points)
+    new SystematicAliasSamplerBase[Double](pmf, points, parameters)
   }
 
 
