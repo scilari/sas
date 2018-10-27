@@ -20,10 +20,10 @@ import scala.{specialized => sp}
   *
   */
 trait SystematicAliasSampler[@sp(Int, Double, Float) T] extends AliasSampler[T] {
-  val parameters: Parameters
+  protected[this] val parameters: Parameters
   // init parameters
   import parameters._
-  override val random: Random = parameters.random
+  override private[this] val random: Random = parameters.random
 
   /**
     * Systematic sampling of sampleCount samples.
