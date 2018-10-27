@@ -11,13 +11,13 @@ import scala.{specialized => sp}
   * Created by iv on 8/22/2016.
   */
 trait AliasSampler[@sp(Int, Double, Float) T] extends Sampler[T] with DiscreteDistribution{
-  protected var _pmf: Array[Double] = _
-  protected var _values: Array[T] = _
-  protected var _aliasedValues: Array[T] = _
-  protected var _aliasProbabilities: Array[Double] = _
-  protected var _binCount: Int = _
+  protected[this] var _pmf: Array[Double] = _
+  protected[this] var _values: Array[T] = _
+  protected[this] var _aliasedValues: Array[T] = _
+  protected[this] var _aliasProbabilities: Array[Double] = _
+  protected[this] var _binCount: Int = _
 
-  val random: Random = Parameters.Default.random
+  protected[this] val random: Random = Parameters.Default.random
 
   /**
     * Samples a random value from the underlying alias table structure.
