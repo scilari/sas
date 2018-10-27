@@ -37,11 +37,10 @@ trait SystematicAliasSampler[@sp(Int, Double, Float) T] extends AliasSampler[T] 
   /**
     * Systematic sampling of sampleCount samples using a pre-created output array.
     *
-    * @param sampleCount Number of samples.
     * @param output Pre-created output array.
     * @return Batch of possibly partially ordered samples.
     */
-  override def sample(sampleCount: Int, output: Array[T]): Array[T] = sampleSystematic(sampleCount, output)
+  override def sample(output: Array[T]): Array[T] = sampleSystematic(output.length, output)
 
   /**
     * Systematic sampling of sampleCount samples with control to provide the output array. Also uses an index to keep
