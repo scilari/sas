@@ -22,7 +22,6 @@ import scala.{specialized => sp}
 trait SystematicAliasSampler[@sp(Int, Double, Float) T] extends AliasSampler[T] {
   protected[this] val parameters: Parameters
   // init parameters
-  import parameters._
   override private[this] val random: Random = parameters.random
 
   /**
@@ -54,6 +53,7 @@ trait SystematicAliasSampler[@sp(Int, Double, Float) T] extends AliasSampler[T] 
     * @return Batch of possibly partially ordered samples.
     */
   private[this] def sampleSystematic(sampleCount: Int, samples: Array[T], fillFrom: Int = 0): Array[T] = {
+    import parameters.{minBatchSize, minRecurSize, isDivisibilityProblem, batchSplitDenominator, batchSplitNumerator}
     if(sampleCount > minBatchSize && isDivisibilityProblem(_binCount, sampleCount)){
       val splitIndex: Int =
         if(sampleCount <= minRecurSize){
